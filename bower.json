@@ -1,0 +1,23 @@
+{
+  "name": "flickity-fade",
+  "authors": [
+    "David DeSandro <desandrocodes@gmail.com>"
+  ],
+  "description": "Fade between cells for Flickity",
+  "main": "flickity-fade.js",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "flickity": "^2.1.2"
+  },
+  "devDependencies": {
+    "flickity-imagesloaded": "^2.0.0"
+  }
+}
