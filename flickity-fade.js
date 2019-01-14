@@ -1,32 +1,26 @@
 /* jshint browser: true, undef: true, unused: true */
 /* globals Flickity */
 
-var Cell = Flickity.Cell;
+var Slide = Flickity.Slide;
 
-Cell.prototype.setPosition = function( x ) {
-  this.x = x;
-  this.updateTarget();
-  // use target position for fade
-  if ( this.parent.options.fade ) {
-    // fade posiiton
-    var isOriginLeft = this.parent.originSide == 'left';
-    var marginProperty = isOriginLeft ? 'marginLeft' : 'marginRight';
-    x = this.size[ marginProperty ] + this.size.width * this.parent.cellAlign;
-    x *= -1;
+var slideUpdateTarget = Slide.prototype.updateTarget;
+Slide.prototype.updateTarget = function() {
+  slideUpdateTarget.apply( this, arguments );
+  if ( !this.parent.options.fade ) {
+    return;
   }
-  this.renderPosition( x );
+  // position cells
+  var slideTargetX = this.target - this.x;
+  var cellsX = 0;
+  var firstCellX = this.cells[0].x;
+  this.cells.forEach( function( cell ) {
+    cellsX += cell.x - firstCellX;
+    var x = cellsX - slideTargetX;
+    cell.renderPosition( x );
+  });
 };
 
 var proto = Flickity.prototype;
-
-// var updateSlides = proto.updateSlides;
-// proto.updateSlides = function() {
-//   updateSlides.apply( this, arguments );
-//   this.slideDistances
-//   if ( !this.options.fade ) {
-//     return;
-//   }
-// };
 
 var positionSlider = proto.positionSlider;
 Flickity.prototype.positionSlider = function() {
