@@ -20,7 +20,27 @@ Slide.prototype.updateTarget = function() {
   });
 };
 
+Slide.prototype.setOpacity = function( alpha ) {
+  this.cells.forEach( function( cell ) {
+    cell.element.style.opacity = alpha;
+  });
+};
+
 var proto = Flickity.prototype;
+
+Flickity.createMethods.push('_createFade');
+
+proto._createFade = function() {
+  this.on( 'activate', this.onActivateFade );
+};
+
+proto.onActivateFade = function() {
+  this.fadeIndex = this.selectedIndex;
+  this.slides.forEach( function( slide, i ) {
+    var alpha = i == this.selectedIndex ? 1 : 0;
+    slide.setOpacity( alpha );
+  }, this );
+};
 
 var positionSlider = proto.positionSlider;
 Flickity.prototype.positionSlider = function() {
@@ -28,12 +48,6 @@ Flickity.prototype.positionSlider = function() {
     positionSlider.apply( this, arguments );
     return;
   }
-  // position fade slider
-  var x = this.cursorPosition;
-  // reverse if right-to-left and using transform
-  x = this.options.rightToLeft ? -x : x;
-  var value = this.getPositionValue( x );
-  this.slider.style.transform = 'translateX(' + value + ')';
 
   this.fadeSlides();
 
@@ -46,37 +60,60 @@ Flickity.prototype.positionSlider = function() {
   }
 };
 
+var positionSliderAtSelected = proto.positionSliderAtSelected;
+proto.positionSliderAtSelected = function() {
+  if ( !this.cells.length ) {
+    return;
+  }
+
+  if ( this.options.fade ) {
+    // position fade slider
+    var x = this.cursorPosition;
+    // reverse if right-to-left and using transform
+    x = this.options.rightToLeft ? -x : x;
+    var value = this.getPositionValue( x );
+    this.slider.style.transform = 'translateX(' + value + ')';
+  }
+
+  positionSliderAtSelected.apply( this, arguments );
+};
+
 proto.fadeSlides = function() {
   if ( this.slides.length < 2 ) {
     return;
   }
 
+  var fadeIndex = this.getFadeIndex();
+  var fadeSlideA = this.slides[fadeIndex];
+  var fadeSlideB = this.slides[ fadeIndex + 1 ];
+  var distance = fadeSlideB.target - fadeSlideA.target;
+  var progress = ( -this.x - fadeSlideA.target ) / distance;
+
+  fadeSlideA.setOpacity( 1 - progress );
+  fadeSlideB.setOpacity( progress );
+
+  var fadeOutSlide = progress > 0.5 ? fadeSlideA : fadeSlideB;
+  var isNewFadeOutSlide = this.fadeOutSlide &&
+    this.fadeOutSlide != fadeOutSlide &&
+    this.fadeOutSlide != fadeSlideA &&
+    this.fadeOutSlide != fadeSlideB;
+  if ( isNewFadeOutSlide ) {
+    // new fadeOutSlide set, hide previous
+    this.fadeOutSlide.setOpacity( 0 );
+  }
+  this.fadeOutSlide = fadeOutSlide;
+};
+
+proto.getFadeIndex = function() {
   // calculate closest previous slide
-  var prevIndex = 0;
-  for ( var i=0; i < this.slides.length; i++ ) {
+  var fadeIndex = 0;
+  // HACK, fix for wrapAround
+  for ( var i=0; i < this.slides.length - 1; i++ ) {
     var slide = this.slides[i];
     if ( -this.x < slide.target ) {
       break;
     }
-    prevIndex = i;
+    fadeIndex = i;
   }
-
-  var prevSlide = this.slides[prevIndex];
-  var nextSlide = this.slides[ prevIndex + 1 ];
-  var distance = nextSlide.target - prevSlide.target;
-
-  var incProgress = ( -this.x - prevSlide.target ) / distance;
-  // console.log( incProgress );
-  this.slides.forEach( function( slide, i ) {
-    var alpha = 0;
-    if ( i == prevIndex ) {
-      // previous slide
-      alpha = 1 - incProgress;
-    } else if ( i == prevIndex + 1 ) {
-      alpha = incProgress;
-    }
-    slide.cells.forEach( function( cell ) {
-      cell.element.style.opacity = alpha;
-    });
-  });
+  return fadeIndex;
 };
