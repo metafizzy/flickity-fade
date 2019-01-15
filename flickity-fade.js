@@ -31,15 +31,29 @@ var proto = Flickity.prototype;
 Flickity.createMethods.push('_createFade');
 
 proto._createFade = function() {
-  this.on( 'activate', this.onActivateFade );
+  this.fadeIndex = this.selectedIndex;
+  this.prevSelectedIndex = this.selectedIndex;
+  this.on( 'select', this.onSelectFade );
+  this.on( 'settle', this.onSettleFade );
 };
 
-proto.onActivateFade = function() {
-  this.fadeIndex = this.selectedIndex;
+var updateSlides = proto.updateSlides;
+proto.updateSlides = function() {
+  updateSlides.apply( this, arguments );
+  // set initial opacity
   this.slides.forEach( function( slide, i ) {
     var alpha = i == this.selectedIndex ? 1 : 0;
     slide.setOpacity( alpha );
   }, this );
+};
+
+proto.onSelectFade = function() {
+  this.fadeIndex = this.prevSelectedIndex;
+  this.prevSelectedIndex = this.selectedIndex;
+};
+
+proto.onSettleFade = function() {
+  this.selectedSlide.setOpacity( 1 );
 };
 
 var positionSlider = proto.positionSlider;
@@ -83,37 +97,48 @@ proto.fadeSlides = function() {
     return;
   }
 
-  var fadeIndex = this.getFadeIndex();
-  var fadeSlideA = this.slides[fadeIndex];
-  var fadeSlideB = this.slides[ fadeIndex + 1 ];
+  var indexA, indexB;
+  if ( this.isDragging ) {
+    indexA = this.getFadeDragIndex();
+    indexB = indexA + 1;
+  } else {
+    indexA = this.fadeIndex;
+    indexB = this.selectedIndex;
+  }
+
+  var fadeSlideA = this.slides[ indexA ];
+  var fadeSlideB = this.slides[ indexB ];
   var distance = fadeSlideB.target - fadeSlideA.target;
   var progress = ( -this.x - fadeSlideA.target ) / distance;
 
   fadeSlideA.setOpacity( 1 - progress );
   fadeSlideB.setOpacity( progress );
 
-  var fadeOutSlide = progress > 0.5 ? fadeSlideA : fadeSlideB;
-  var isNewFadeOutSlide = this.fadeOutSlide &&
-    this.fadeOutSlide != fadeOutSlide &&
-    this.fadeOutSlide != fadeSlideA &&
-    this.fadeOutSlide != fadeSlideB;
-  if ( isNewFadeOutSlide ) {
-    // new fadeOutSlide set, hide previous
-    this.fadeOutSlide.setOpacity( 0 );
+  var fadeHideIndex = indexA;
+  if ( this.isDragging ) {
+    fadeHideIndex = progress > 0.5 ? indexA : indexB;
   }
-  this.fadeOutSlide = fadeOutSlide;
+  var isNewHideIndex = this.fadeHideIndex != undefined &&
+    this.fadeHideIndex != fadeHideIndex &&
+    this.fadeHideIndex != indexA &&
+    this.fadeHideIndex != indexB;
+  if ( isNewHideIndex ) {
+    // new fadeHideSlide set, hide previous
+    this.slides[ this.fadeHideIndex ].setOpacity( 0 );
+  }
+  this.fadeHideIndex = fadeHideIndex;
 };
 
-proto.getFadeIndex = function() {
+proto.getFadeDragIndex = function() {
   // calculate closest previous slide
-  var fadeIndex = 0;
+  var dragIndex = 0;
   // HACK, fix for wrapAround
   for ( var i=0; i < this.slides.length - 1; i++ ) {
     var slide = this.slides[i];
     if ( -this.x < slide.target ) {
       break;
     }
-    fadeIndex = i;
+    dragIndex = i;
   }
-  return fadeIndex;
+  return dragIndex;
 };
