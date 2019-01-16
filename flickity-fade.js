@@ -9,14 +9,12 @@ Slide.prototype.updateTarget = function() {
   if ( !this.parent.options.fade ) {
     return;
   }
-  // position cells
+  // position cells at selected target
   var slideTargetX = this.target - this.x;
-  var cellsX = 0;
   var firstCellX = this.cells[0].x;
   this.cells.forEach( function( cell ) {
-    cellsX += cell.x - firstCellX;
-    var x = cellsX - slideTargetX;
-    cell.renderPosition( x );
+    var targetX = cell.x - firstCellX - slideTargetX;
+    cell.renderPosition( targetX );
   });
 };
 
@@ -40,6 +38,9 @@ proto._createFade = function() {
 var updateSlides = proto.updateSlides;
 proto.updateSlides = function() {
   updateSlides.apply( this, arguments );
+  if ( !this.options.fade ) {
+    return;
+  }
   // set initial opacity
   this.slides.forEach( function( slide, i ) {
     var alpha = i == this.selectedIndex ? 1 : 0;
@@ -53,7 +54,9 @@ proto.onSelectFade = function() {
 };
 
 proto.onSettleFade = function() {
-  this.selectedSlide.setOpacity( 1 );
+  if ( this.options.fade ) {
+    this.selectedSlide.setOpacity( 1 );
+  }
 };
 
 var positionSlider = proto.positionSlider;
