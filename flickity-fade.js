@@ -1,6 +1,10 @@
 /* jshint browser: true, undef: true, unused: true */
 /* globals Flickity */
 
+var utils = fizzyUIUtils;
+
+// ---- Slide ---- //
+
 var Slide = Flickity.Slide;
 
 var slideUpdateTarget = Slide.prototype.updateTarget;
@@ -23,6 +27,8 @@ Slide.prototype.setOpacity = function( alpha ) {
     cell.element.style.opacity = alpha;
   });
 };
+
+// ---- Flickity ---- //
 
 var proto = Flickity.prototype;
 
@@ -99,11 +105,12 @@ proto.fadeSlides = function() {
   if ( this.slides.length < 2 ) {
     return;
   }
-
+  // get slides to fade-in & fade-out
   var indexA, indexB;
   if ( this.isDragging ) {
-    indexA = this.getFadeDragIndex();
-    indexB = indexA + 1;
+    var fadeIndexes = this.getFadeDragIndexes();
+    indexA = fadeIndexes.a;
+    indexB = fadeIndexes.b;
   } else {
     indexA = this.fadeIndex;
     indexB = this.selectedIndex;
@@ -111,12 +118,14 @@ proto.fadeSlides = function() {
 
   var fadeSlideA = this.slides[ indexA ];
   var fadeSlideB = this.slides[ indexB ];
-  var distance = fadeSlideB.target - fadeSlideA.target;
-  var progress = ( -this.x - fadeSlideA.target ) / distance;
+  var distance = this.wrapDifference( fadeSlideA.target, fadeSlideB.target ); 
+  var progress = this.wrapDifference( fadeSlideA.target, -this.x );
+  progress = progress / distance;
 
   fadeSlideA.setOpacity( 1 - progress );
   fadeSlideB.setOpacity( progress );
 
+  // hide previous slide
   var fadeHideIndex = indexA;
   if ( this.isDragging ) {
     fadeHideIndex = progress > 0.5 ? indexA : indexB;
@@ -132,10 +141,40 @@ proto.fadeSlides = function() {
   this.fadeHideIndex = fadeHideIndex;
 };
 
-proto.getFadeDragIndex = function() {
+proto.getFadeDragIndexes = function() {
+  if ( this.options.wrapAround ) {
+    return this.getFadeDragWrapIndexes();
+  } else {
+    return this.getFadeDragLimitIndexes();
+  }
+};
+
+proto.getFadeDragWrapIndexes = function() {
+  var distances = this.slides.map( function( slide, i ) {
+    return this.getSlideDistance( -this.x, i );
+  }, this );
+  var absDistances = distances.map( function( distance ) {
+    return Math.abs( distance );
+  });
+  var minDistance = Math.min.apply( Math, absDistances );
+  var closestIndex = absDistances.indexOf( minDistance );
+  var distance = distances[ closestIndex ];
+  var len = this.slides.length;
+
+  var indexes = {};
+  if ( distance < 0 ) {
+    indexes.a = utils.modulo( closestIndex - 1, len );
+    indexes.b = closestIndex;
+  } else {
+    indexes.a = closestIndex;
+    indexes.b = utils.modulo( closestIndex + 1, len );
+  }
+  return indexes;
+};
+
+proto.getFadeDragLimitIndexes = function() {
   // calculate closest previous slide
   var dragIndex = 0;
-  // HACK, fix for wrapAround
   for ( var i=0; i < this.slides.length - 1; i++ ) {
     var slide = this.slides[i];
     if ( -this.x < slide.target ) {
@@ -143,5 +182,42 @@ proto.getFadeDragIndex = function() {
     }
     dragIndex = i;
   }
-  return dragIndex;
+  return {
+    a: dragIndex,
+    b: dragIndex + 1,
+  };
+};
+
+proto.wrapDifference = function( a, b ) {
+  var diff = b - a;
+
+  if ( !this.options.wrapAround ) {
+    return diff;
+  }
+
+  var diffPlus = diff + this.slideableWidth;
+  var diffMinus = diff - this.slideableWidth;
+  if ( Math.abs( diffPlus ) < Math.abs( diff ) ) {
+    diff = diffPlus;
+  }
+  if ( Math.abs( diffMinus ) < Math.abs( diff ) ) {
+    diff = diffMinus;
+  }
+  return diff;
+};
+
+// ---- wrapAround ---- //
+
+var _getWrapShiftCells = proto._getWrapShiftCells;
+proto._getWrapShiftCells = function() {
+  if ( !this.options.fade ) {
+    _getWrapShiftCells.apply( this, arguments );
+  }
+};
+
+var shiftWrapCells = proto.shiftWrapCells;
+proto.shiftWrapCells = function() {
+  if ( !this.options.fade ) {
+    shiftWrapCells.apply( this, arguments );
+  }
 };

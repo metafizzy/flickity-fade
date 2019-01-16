@@ -1,0 +1,11 @@
+/* flickity-fade */
+
+.flickity-slider > * {
+  pointer-events: none;
+  z-index: 0;
+}
+
+.flickity-slider > .is-selected {
+  pointer-events: auto;
+  z-index: 1;
+}
