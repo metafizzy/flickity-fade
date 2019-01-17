@@ -106,18 +106,9 @@ proto.fadeSlides = function() {
     return;
   }
   // get slides to fade-in & fade-out
-  var indexA, indexB;
-  if ( this.isDragging ) {
-    var fadeIndexes = this.getFadeDragIndexes();
-    indexA = fadeIndexes.a;
-    indexB = fadeIndexes.b;
-  } else {
-    indexA = this.fadeIndex;
-    indexB = this.selectedIndex;
-  }
-
-  var fadeSlideA = this.slides[ indexA ];
-  var fadeSlideB = this.slides[ indexB ];
+  var indexes = this.getFadeIndexes();
+  var fadeSlideA = this.slides[ indexes.a ];
+  var fadeSlideB = this.slides[ indexes.b ];
   var distance = this.wrapDifference( fadeSlideA.target, fadeSlideB.target ); 
   var progress = this.wrapDifference( fadeSlideA.target, -this.x );
   progress = progress / distance;
@@ -126,14 +117,14 @@ proto.fadeSlides = function() {
   fadeSlideB.setOpacity( progress );
 
   // hide previous slide
-  var fadeHideIndex = indexA;
+  var fadeHideIndex = indexes.a;
   if ( this.isDragging ) {
-    fadeHideIndex = progress > 0.5 ? indexA : indexB;
+    fadeHideIndex = progress > 0.5 ? indexes.a : indexes.b;
   }
   var isNewHideIndex = this.fadeHideIndex != undefined &&
     this.fadeHideIndex != fadeHideIndex &&
-    this.fadeHideIndex != indexA &&
-    this.fadeHideIndex != indexB;
+    this.fadeHideIndex != indexes.a &&
+    this.fadeHideIndex != indexes.b;
   if ( isNewHideIndex ) {
     // new fadeHideSlide set, hide previous
     this.slides[ this.fadeHideIndex ].setOpacity( 0 );
@@ -141,7 +132,13 @@ proto.fadeSlides = function() {
   this.fadeHideIndex = fadeHideIndex;
 };
 
-proto.getFadeDragIndexes = function() {
+proto.getFadeIndexes = function() {
+  if ( !this.isDragging ) {
+    return {
+      a: this.fadeIndex,
+      b: this.selectedIndex,
+    };
+  }
   if ( this.options.wrapAround ) {
     return this.getFadeDragWrapIndexes();
   } else {
@@ -161,15 +158,11 @@ proto.getFadeDragWrapIndexes = function() {
   var distance = distances[ closestIndex ];
   var len = this.slides.length;
 
-  var indexes = {};
-  if ( distance < 0 ) {
-    indexes.a = utils.modulo( closestIndex - 1, len );
-    indexes.b = closestIndex;
-  } else {
-    indexes.a = closestIndex;
-    indexes.b = utils.modulo( closestIndex + 1, len );
-  }
-  return indexes;
+  var delta = distance >= 0 ? 1 : -1;
+  return {
+    a: closestIndex,
+    b: utils.modulo( closestIndex + delta, len ),
+  };
 };
 
 proto.getFadeDragLimitIndexes = function() {
