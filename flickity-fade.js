@@ -38,6 +38,7 @@ proto._createFade = function() {
   this.fadeIndex = this.selectedIndex;
   this.prevSelectedIndex = this.selectedIndex;
   this.on( 'select', this.onSelectFade );
+  this.on( 'dragEnd', this.onDragEndFade );
   this.on( 'settle', this.onSettleFade );
 };
 
@@ -60,9 +61,15 @@ proto.onSelectFade = function() {
 };
 
 proto.onSettleFade = function() {
+  delete this.didDragEnd;
   if ( this.options.fade ) {
     this.selectedSlide.setOpacity( 1 );
   }
+};
+
+proto.onDragEndFade = function() {
+  // set flag
+  this.didDragEnd = true;
 };
 
 var positionSlider = proto.positionSlider;
@@ -109,7 +116,7 @@ proto.fadeSlides = function() {
   var indexes = this.getFadeIndexes();
   var fadeSlideA = this.slides[ indexes.a ];
   var fadeSlideB = this.slides[ indexes.b ];
-  var distance = this.wrapDifference( fadeSlideA.target, fadeSlideB.target ); 
+  var distance = this.wrapDifference( fadeSlideA.target, fadeSlideB.target );
   var progress = this.wrapDifference( fadeSlideA.target, -this.x );
   progress = progress / distance;
 
@@ -133,7 +140,7 @@ proto.fadeSlides = function() {
 };
 
 proto.getFadeIndexes = function() {
-  if ( !this.isDragging ) {
+  if ( !this.isDragging && !this.didDragEnd ) {
     return {
       a: this.fadeIndex,
       b: this.selectedIndex,
