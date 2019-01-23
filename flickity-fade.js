@@ -73,38 +73,22 @@ proto.onDragEndFade = function() {
 };
 
 var positionSlider = proto.positionSlider;
-Flickity.prototype.positionSlider = function() {
+proto.positionSlider = function() {
   if ( !this.options.fade ) {
     positionSlider.apply( this, arguments );
     return;
   }
 
   this.fadeSlides();
-
-  // scroll event
-  var firstSlide = this.slides[0];
-  if ( firstSlide ) {
-    var positionX = -this.x - firstSlide.target;
-    var progress = positionX / this.slidesWidth;
-    this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
-  }
+  this.dispatchScrollEvent();
 };
 
 var positionSliderAtSelected = proto.positionSliderAtSelected;
 proto.positionSliderAtSelected = function() {
-  if ( !this.cells.length ) {
-    return;
-  }
-
   if ( this.options.fade ) {
-    // position fade slider
-    var x = this.cursorPosition;
-    // reverse if right-to-left and using transform
-    x = this.options.rightToLeft ? -x : x;
-    var value = this.getPositionValue( x );
-    this.slider.style.transform = 'translateX(' + value + ')';
+    // position fade slider at origin
+    this.setTranslateX( 0 );
   }
-
   positionSliderAtSelected.apply( this, arguments );
 };
 
