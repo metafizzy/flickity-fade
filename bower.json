@@ -3,10 +3,10 @@
   "authors": [
     "David DeSandro <desandrocodes@gmail.com>"
   ],
-  "description": "Fade between cells for Flickity",
+  "description": "Fade between Flickity slides",
   "main": "flickity-fade.js",
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/metafizzy/flickity-fade/",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,7 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "flickity": "^2.1.2"
+    "flickity": "^2.2.0",
+    "fizzy-ui-utils": "^2.0.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0"

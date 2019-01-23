@@ -1,7 +1,34 @@
-/* jshint browser: true, undef: true, unused: true */
-/* globals Flickity */
+/**
+ * Flickity fade v1.0.0
+ * Fade between Flickity slides
+ */
 
-var utils = fizzyUIUtils;
+/* jshint browser: true, undef: true, unused: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /*globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'flickity/js/index',
+      'fizzy-ui-utils/utils',
+    ], factory );
+  } else if ( module && module.exports ) {
+    // CommonJS
+    module.exports = factory(
+      require('flickity'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    factory(
+      window.Flickity,
+      window.fizzyUIUtils
+    );
+  }
+
+}( this, function factory( Flickity, utils ) {
 
 // ---- Slide ---- //
 
@@ -205,3 +232,7 @@ proto.shiftWrapCells = function() {
     shiftWrapCells.apply( this, arguments );
   }
 };
+
+return Flickity;
+
+}));
