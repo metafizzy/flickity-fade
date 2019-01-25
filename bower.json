@@ -19,6 +19,7 @@
     "fizzy-ui-utils": "^2.0.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "^2.0.0"
+    "flickity-imagesloaded": "^2.0.0",
+    "qunit": "^2.9.1"
   }
 }

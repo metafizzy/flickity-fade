@@ -1,0 +1,9 @@
+{
+  "browser": true,
+  "unused": true,
+  "undef": true,
+  "globals": {
+    "Flickity": false,
+    "QUnit": false
+  }
+}

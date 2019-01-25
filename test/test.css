@@ -1,0 +1,41 @@
+/* flickity-fade test */
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: sans-serif;
+}
+
+@media ( min-width: 900px ) {
+  .flexer {
+    display: flex;
+  }
+
+  .flexer__cell {
+    margin: 0 10px;
+  }
+}
+
+.carousel {
+  width: 400px;
+  background: #EEE;
+}
+
+.carousel__cell {
+  width: 200px;
+  height: 140px;
+  color: white;
+  font-size: 4.0rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+}
+
+.carousel__cell:nth-child(5n+1) { background: #C25; }
+.carousel__cell:nth-child(5n+2) { background: #E62; }
+.carousel__cell:nth-child(5n+3) { background: #EA0; }
+.carousel__cell:nth-child(5n+4) { background: #6C6; }
+.carousel__cell:nth-child(5n+0) { background: #19F; }
+
+.carousel__cell--small { width: 120px; }
+.carousel__cell--big { width: 240px; }

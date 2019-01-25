@@ -67,6 +67,7 @@ proto._createFade = function() {
   this.on( 'select', this.onSelectFade );
   this.on( 'dragEnd', this.onDragEndFade );
   this.on( 'settle', this.onSettleFade );
+  this.on( 'deactivate', this.onDeactivateFade );
 };
 
 var updateSlides = proto.updateSlides;
@@ -82,6 +83,8 @@ proto.updateSlides = function() {
   }, this );
 };
 
+/* ---- events ---- */
+
 proto.onSelectFade = function() {
   this.fadeIndex = this.prevSelectedIndex;
   this.prevSelectedIndex = this.selectedIndex;
@@ -89,8 +92,14 @@ proto.onSelectFade = function() {
 
 proto.onSettleFade = function() {
   delete this.didDragEnd;
-  if ( this.options.fade ) {
-    this.selectedSlide.setOpacity( 1 );
+  if ( !this.options.fade ) {
+    return;
+  }
+  // set full and 0 opacity on selected & faded slides
+  this.selectedSlide.setOpacity( 1 );
+  var fadedSlide = this.slides[ this.fadeIndex ];
+  if ( fadedSlide && this.fadeIndex != this.selectedIndex ) {
+    this.slides[ this.fadeIndex ].setOpacity( 0 );
   }
 };
 
@@ -98,6 +107,15 @@ proto.onDragEndFade = function() {
   // set flag
   this.didDragEnd = true;
 };
+
+proto.onDeactivateFade = function() {
+  // reset opacity
+  this.slides.forEach( function( slide ) {
+    slide.setOpacity('');
+  });
+};
+
+/* ---- position & fading ---- */
 
 var positionSlider = proto.positionSlider;
 proto.positionSlider = function() {
