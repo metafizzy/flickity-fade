@@ -14,7 +14,7 @@
       'flickity/js/index',
       'fizzy-ui-utils/utils',
     ], factory );
-  } else if ( module && module.exports ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       require('flickity'),
