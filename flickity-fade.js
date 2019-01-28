@@ -87,7 +87,8 @@ proto.updateSlides = function() {
 /* ---- events ---- */
 
 proto.onSelectFade = function() {
-  this.fadeIndex = this.prevSelectedIndex;
+  // in case of resize, keep fadeIndex within current count
+  this.fadeIndex = Math.min( this.prevSelectedIndex, this.slides.length - 1 );
   this.prevSelectedIndex = this.selectedIndex;
 };
 
@@ -113,7 +114,7 @@ proto.onActivateFade = function() {
   if ( this.options.fade ) {
     this.element.classList.add('is-fade');
   }
-}
+};
 
 proto.onDeactivateFade = function() {
   if ( !this.options.fade ) {
