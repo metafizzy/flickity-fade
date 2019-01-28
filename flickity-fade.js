@@ -67,6 +67,7 @@ proto._createFade = function() {
   this.on( 'select', this.onSelectFade );
   this.on( 'dragEnd', this.onDragEndFade );
   this.on( 'settle', this.onSettleFade );
+  this.on( 'activate', this.onActivateFade );
   this.on( 'deactivate', this.onDeactivateFade );
 };
 
@@ -108,7 +109,17 @@ proto.onDragEndFade = function() {
   this.didDragEnd = true;
 };
 
+proto.onActivateFade = function() {
+  if ( this.options.fade ) {
+    this.element.classList.add('is-fade');
+  }
+}
+
 proto.onDeactivateFade = function() {
+  if ( !this.options.fade ) {
+    return;
+  }
+  this.element.classList.remove('is-fade');
   // reset opacity
   this.slides.forEach( function( slide ) {
     slide.setOpacity('');
