@@ -12,7 +12,9 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "package.json",
+    "sandbox"
   ],
   "dependencies": {
     "flickity": "^2.2.0",
@@ -21,5 +23,9 @@
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0",
     "qunit": "^2.9.1"
-  }
+  },
+  "keywords": [
+    "flickity",
+    "fade"
+  ]
 }

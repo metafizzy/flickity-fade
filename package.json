@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/metafizzy/flickity-fade/issues"
   },
-  "homepage": "https://github.com/metafizzy/flickity-fade#readme"
+  "homepage": "https://github.com/metafizzy/flickity-fade#readme",
+  "directories": {
+    "test": "test"
+  }
 }
