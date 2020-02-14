@@ -159,7 +159,7 @@ proto.fadeSlides = function() {
   var fadeSlideB = this.slides[ indexes.b ];
   var distance = this.wrapDifference( fadeSlideA.target, fadeSlideB.target );
   var progress = this.wrapDifference( fadeSlideA.target, -this.x );
-  progress = progress / distance;
+  progress = Math.max(progress / distance);
 
   fadeSlideA.setOpacity( 1 - progress );
   fadeSlideB.setOpacity( progress );
