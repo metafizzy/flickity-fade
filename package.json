@@ -1,14 +1,22 @@
 {
   "name": "flickity-fade",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Fade between Flickity slides",
   "main": "flickity-fade.js",
+  "peerDependencies": {
+    "flickity": "^3.0.0"
+  },
   "dependencies": {
-    "flickity": "^2.2.0",
-    "fizzy-ui-utils": "^2.0.0"
+    "fizzy-ui-utils": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.10.0",
+    "eslint-plugin-metafizzy": "^2.0.1",
+    "qunit": "^2.18.0"
   },
   "scripts": {
-    "test": "echo \"View test/\" && exit 1"
+    "test": "npm run lint",
+    "lint": "npx eslint ."
   },
   "keywords": [
     "flickity",

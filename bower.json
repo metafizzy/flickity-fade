@@ -17,12 +17,10 @@
     "sandbox"
   ],
   "dependencies": {
-    "flickity": "^2.2.0",
-    "fizzy-ui-utils": "^2.0.0"
+    "flickity": "^3.0.0",
+    "fizzy-ui-utils": "^3.0.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "^2.0.0",
-    "qunit": "^2.9.1"
   },
   "keywords": [
     "flickity",

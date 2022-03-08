@@ -8,26 +8,23 @@ Add `flickity-fade.css` to you stylesheets and `flickity-fade.js` to your script
 
 ### Download
 
-+ [flickity-fade.css](https://unpkg.com/flickity-fade@1/flickity-fade.css)
-+ [flickity-fade.js](https://unpkg.com/flickity-fade@1/flickity-fade.js)
++ [flickity-fade.css](https://unpkg.com/flickity-fade@2/flickity-fade.css)
++ [flickity-fade.js](https://unpkg.com/flickity-fade@2/flickity-fade.js)
 
 ### CDN
 
 ``` html
 <!-- CSS -->
-<link rel="stylesheet" href="https://unpkg.com/flickity-fade@1/flickity-fade.css">
+<link rel="stylesheet" href="https://unpkg.com/flickity-fade@2/flickity-fade.css">
 
 <!-- JS -->
-<script src="https://unpkg.com/flickity-fade@1/flickity-fade.js"></script>
+<script src="https://unpkg.com/flickity-fade@2/flickity-fade.js"></script>
 ```
 
 ### Package managers
 
-This package is registered as `flickity-fade`.
-
 + npm: `npm install flickity-fade`
 + Yarn: `yarn add flickity-fade`
-+ Bower: `bower install flickity-fade`
 
 ## Usage
 
@@ -35,14 +32,14 @@ Enable fade behavior by setting `fade: true` in Flickity options.
 
 ``` js
 // jQuery
-var $carousel = $('.carousel').flickity({
+let $carousel = $('.carousel').flickity({
   fade: true,
 });
 ```
 
 ``` js
 // vanilla JS
-var flkty = new Flickity( '.carousel', {
+let flkty = new Flickity( '.carousel', {
   fade: true,
 });
 ```
@@ -54,23 +51,14 @@ var flkty = new Flickity( '.carousel', {
 </div>
 ```
 
-### Webpack & Browserify
+### Webpack
 
 ``` js
-var Flickity = require('flickity-fade');
+const Flickity = require('flickity');
+require('flickity-fade');
 
-var flkty = new Flickity( '.carousel', {
+let flkty = new Flickity( '.carousel', {
   fade: true,
-});
-```
-
-### RequireJS
-
-``` js
-requirejs( [ 'path/to/flickity-fade' ], function( Flickity ) {
-  var flkty = new Flickity( '.carousel', {
-    fade: true,
-  });
 });
 ```
 

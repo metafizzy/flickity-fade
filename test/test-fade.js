@@ -1,19 +1,29 @@
 QUnit.test( 'fade', function( assert ) {
 
-  var done = assert.async();
+  // position values can be off by 0.1% or 1px
+  function isPositionApprox( cell, expected ) {
+    let { transform } = cell.style;
+    let position = transform.replace( 'translateX(', '' ).replace( ')', '' );
+    let isPercent = position.indexOf('%') !== -1;
+    position = parseFloat( position );
+    let diff = Math.abs( expected - position );
+    return isPercent ? diff < 0.1 : diff <= 1;
+  }
 
-  var carousel = document.querySelector('.carousel--single');
-  var cells = carousel.querySelectorAll('.carousel__cell');
-  var flkty = new Flickity( carousel, {
+  let done = assert.async();
+
+  let carousel = document.querySelector('.carousel--single');
+  let cells = carousel.querySelectorAll('.carousel__cell');
+  let flkty = new Flickity( carousel, {
     fade: true,
-  });
+  } );
 
   assert.ok( flkty instanceof Flickity, 'Flickity instance created' );
   assert.equal( cells[0].style.opacity, '1', 'init - cell #0 full opacity' );
   assert.equal( cells[1].style.opacity, '0', 'init - cell #1 0 opacity' );
-  assert.equal( cells[0].style.left, '-25%', 'cell #0 left: -25% ' );
-  assert.equal( cells[1].style.left, '-15%', 'cell #1 left: -15% ' );
-  assert.equal( cells[2].style.left, '-30%', 'cell #2 left: -30% ' );
+  assert.ok( isPositionApprox( cells[0], -50 ), 'cell #0 left: -50% ' );
+  assert.ok( isPositionApprox( cells[1], -50 ), 'cell #1 left: -50% ' );
+  assert.ok( isPositionApprox( cells[2], -50 ), 'cell #2 left: -50% ' );
 
   flkty.once( 'settle', onSettle1 );
   flkty.select( 1 );
@@ -52,23 +62,23 @@ QUnit.test( 'fade', function( assert ) {
 
   /* ---- groupCells ---- */
 
-  var groupLefts = [ '-40%', '10%', '-45%', '15%', '-40%',
-    '-10%', '-45%', '-15%', '15%' ];
+  let groupLefts = [ -80, 33.33, -75, 50, -133.33,
+    -20, -150, -50, 50 ];
 
   function initGroup() {
     flkty = new Flickity( carousel, {
       fade: true,
       groupCells: true,
-    });
+    } );
 
-    for ( var i = 0; i < cells.length; i++ ) {
-      var cell = cells[i];
-      var left = groupLefts[i];
-      var message = 'grouped cell #' + i + ' left: ' + left;
-      assert.equal( cell.style.left, left, message );
+    for ( let i = 0; i < cells.length; i++ ) {
+      let cell = cells[i];
+      let left = groupLefts[i];
+      let message = `grouped cell #${i} left: ${left}`;
+      assert.ok( isPositionApprox( cell, left ), message );
     }
 
     done();
   }
 
-});
+} );

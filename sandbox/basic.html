@@ -6,7 +6,7 @@
 
   <title>basic flickity fade</title>
 
-  <link rel="stylesheet" href="../bower_components/flickity/css/flickity.css" />
+  <link rel="stylesheet" href="../node_modules/flickity/css/flickity.css" />
   <link rel="stylesheet" href="../flickity-fade.css" />
 
   <style>
@@ -108,30 +108,27 @@
   <div class="carousel-cell"><img src="https://picsum.photos/640/640/?image=824" /></div>
 </div>
 
-<script src="../bower_components/get-size/get-size.js"></script>
-<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
-<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
-<script src="../bower_components/unipointer/unipointer.js"></script>
-<script src="../bower_components/unidragger/unidragger.js"></script>
-<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
-<script src="../bower_components/imagesloaded/imagesloaded.js"></script>
+<script src="../node_modules/get-size/get-size.js"></script>
+<script src="../node_modules/ev-emitter/ev-emitter.js"></script>
+<script src="../node_modules/unidragger/unidragger.js"></script>
+<script src="../node_modules/fizzy-ui-utils/utils.js"></script>
+<script src="../node_modules/imagesloaded/imagesloaded.js"></script>
 
-<script src="../bower_components/flickity/js/cell.js"></script>
-<script src="../bower_components/flickity/js/slide.js"></script>
-<script src="../bower_components/flickity/js/animate.js"></script>
-<script src="../bower_components/flickity/js/flickity.js"></script>
-<script src="../bower_components/flickity/js/drag.js"></script>
-<script src="../bower_components/flickity/js/prev-next-button.js"></script>
-<script src="../bower_components/flickity/js/page-dots.js"></script>
-<script src="../bower_components/flickity/js/add-remove-cell.js"></script>
-<script src="../bower_components/flickity/js/lazyload.js"></script>
-
-<script src="../bower_components/flickity-imagesloaded/flickity-imagesloaded.js"></script>
+<script src="../node_modules/flickity/js/cell.js"></script>
+<script src="../node_modules/flickity/js/slide.js"></script>
+<script src="../node_modules/flickity/js/animate.js"></script>
+<script src="../node_modules/flickity/js/core.js"></script>
+<script src="../node_modules/flickity/js/drag.js"></script>
+<script src="../node_modules/flickity/js/prev-next-button.js"></script>
+<script src="../node_modules/flickity/js/page-dots.js"></script>
+<script src="../node_modules/flickity/js/add-remove-cell.js"></script>
+<script src="../node_modules/flickity/js/lazyload.js"></script>
+<script src="../node_modules/flickity/js/imagesloaded.js"></script>
 
 <script src="../flickity-fade.js"></script>
 
 <script>
-var flkty1 = new Flickity( '.carousel1', {
+let flkty1 = new Flickity( '.carousel1', {
   fade: true,
   groupCells: true,
   // wrapAround: true,
@@ -139,20 +136,19 @@ var flkty1 = new Flickity( '.carousel1', {
   imagesLoaded: true,
 });
 
-var flkty2 = new Flickity( '.carousel2', {
+let flkty2 = new Flickity( '.carousel2', {
   fade: true,
   groupCells: true,
   wrapAround: true,
   imagesLoaded: true,
 });
 
-
-var flktyLazyload = new Flickity( '.carousel--lazyload', {
+let flktyLazyload = new Flickity( '.carousel--lazyload', {
   fade: true,
   lazyLoad: true,
 });
 
-var flktyNoFade = new Flickity( '.carousel--no-fade', {
+let flktyNoFade = new Flickity( '.carousel--no-fade', {
   imagesLoaded: true,
 });
 </script>
